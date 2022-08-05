@@ -1,0 +1,9 @@
+# folders to ignore
+**/results
+**/images
+**/files
+
+# files to ignore
+*.parquet
+*.csv
+*.png

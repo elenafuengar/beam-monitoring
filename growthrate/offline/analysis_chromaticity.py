@@ -5,8 +5,15 @@ from harpy.harmonic_analysis import HarmonicAnalysis
 import matplotlib.pyplot as plt
 import csv 
 
-path ='/user/spsscrub/2022/sps_beam_monitoring/sps_beam_monitoring/data/chromaticity_measurments/SPS.USER.MD5/2022.07.26/'
-folder = 'QPH0.3_QPV0.4_KLOF1_N2e10'
+path ='/usex = np.array(median_tunesx)
+tunesy = np.array(median_tunesy)
+idy=np.isfinite(tunesy)
+idx=np.isfinite(tunesx)
+
+px, covx = np.polyfit(DpOverP[idx]/1000, tunesx[idx],1, cov = True)
+py, covy = np.polyfit(DpOverP[idy]/1000, tunesy[idy],1, cov = True)
+/spsscrub/2022/sps_beam_monitoring/sps_beam_monitoring/data/chromaticity_measurments/SPS.USER.MD3/2022.08.15/'
+folder = 'QPH0.1_QPV0.1_N3e10'
 parquet_list=sorted(glob.glob(path+folder+'/*.parquet'))
 
 #parquet_list=glob.glob(path+folder+'/'+'2022.07.26.17.00.28.141007.parquet')
@@ -73,12 +80,12 @@ def get_BBQ_tunes(dict):
 			tune_mode_0 = tune_modes[0]
                    
 			if plane == 'H':
-				if tune_mode_0[tune_mode_0 > 0.1].size > 0:
+				if tune_mode_0[tune_mode_0 > 0.1 and tune_mode_0 < 0.17].size > 0:
 					tunes[plane].append(float(tune_mode_0[tune_mode_0 > 0]))
 				else: 
 					tunes[plane].append(np.nan)
 			if plane == 'V':
-				if tune_mode_0[tune_mode_0 > 0.1].size > 0:
+				if tune_mode_0[tune_mode_0 > 0.14].size > 0:
 					tunes[plane].append(float(tune_mode_0[tune_mode_0 > 0]))
 				else:
 					tunes[plane].append(np.nan)
@@ -169,9 +176,11 @@ DpOverP=np.delete(DpOverP,len(DpOverP)-1)
 DpOverP[np.where(DpOverP==-0.001)[0][0]-1]=-0.001
 DpOverP=DpOverP*1000
 '''
-DpOverPmeas=-(RevFreq-43347.2890625)/43347.2890625/1.8e-3*1000 #dp/p = dw/w/slipfactor
+# Formula with slip factor for Q20 only
+# DpOverPmeas=-(RevFreq-43347.2890625)/43347.2890625/1.8e-3*1000 #dp/p = dw/w/slipfactor
+DpOverPmeas=-(RevFreq-43347.2890625)/max(RevFreq-43347.2890625)
 DpOverP=DpOverPmeas #Dp/P obtained from the RevFreq acquisition
-
+print(DpOverP)
 for t in range(len(Tunes)):
 	ax1.scatter(DpOverP[t], Tunes[t]['median_tunes']['H'])
 	ax1.set_xlabel('dp/p [permill]')

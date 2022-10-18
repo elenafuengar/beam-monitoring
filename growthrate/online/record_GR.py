@@ -1,5 +1,6 @@
 from pyjapcscout import PyJapcScout
 from helper_functions import callback_core
+from datetime import date
 import PlottingClassesSPS as pc
 
 
@@ -11,19 +12,17 @@ def outer_callback(plot_func_list):
 
 # Set up monitor
 selector = 'SPS.USER.MD5'
-BBQ_device = 'SPS.BQ.CONT/ContinuousAcquisition'
-devices = [BBQ_device, 'SPSBEAM/QPV', 'SPSBEAM/QPH', 'SpsLowLevelRF/RadialSteering', 'SpsLowLevelRF/DpOverPOffset','SPS.BCTDC.41435/Acquisition', 'SA.RevFreq-ACQ/Acquisition']
-plot_func_list = [pc.BBQCONT()]
-
+BBQ_device = 'SPS.BQ.KICKED/ContinuousAcquisition'
+devices = [BBQ_device, 'SPSBEAM/QPV', 'SPSBEAM/QPH']
 
 # start PyJapcScout and so incaify Python instance
 myPyJapc = PyJapcScout(incaAcceleratorName='SPS')
 
-myMonitor = myPyJapc.PyJapcScoutMonitor(selector, devices,
-                   onValueReceived=outer_callback(plot_func_list), groupStrategy='extended')
+myMonitor = myPyJapc.PyJapcScoutMonitor(selector, devices)
 
 # Saving data configuration
-myMonitor.saveDataPath = f'./data/chromaticity_measurments/{selector}/2022.08.02'
+date=str(date.today())
+myMonitor.saveDataPath = f'./data/growthrate/{selector}/{date}/'
 myMonitor.saveData = True
 myMonitor.saveDataFormat = 'parquet'
 
